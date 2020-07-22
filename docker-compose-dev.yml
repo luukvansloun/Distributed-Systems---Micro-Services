@@ -1,0 +1,117 @@
+version: '3.6'
+
+services:
+
+  frontend:
+    build:
+      context: ./deLijnRatings/frontend
+      dockerfile: Dockerfile
+
+    volumes:
+      - './deLijnRatings/frontend:/usr/src/app'
+
+    ports:
+      - 5000:5000
+
+    environment:
+      - FLASK_ENV=development
+
+    depends_on:
+      - users
+      - ratings
+      - delijnapi
+
+  users:
+    build:
+      context: ./deLijnRatings/users
+      dockerfile: Dockerfile
+
+    volumes:
+      - './deLijnRatings/users:/usr/src/app'
+
+    ports:
+      - 5001:5000
+
+    environment:
+      - FLASK_APP=./deLijnRatings/users/client.py
+      - FLASK_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users
+
+    depends_on:
+      - users-db
+
+  users-db:
+    build:
+      context: ./deLijnRatings/users/users-db
+      dockerfile: Dockerfile
+
+    ports:
+      - 5435:5432
+
+    environment:
+      - POSTGRES_USERS=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  ratings:
+    build:
+      context: ./deLijnRatings/ratings
+      dockerfile: Dockerfile
+
+    volumes:
+      - './deLijnRatings/ratings:/usr/src/app'
+
+    ports:
+      - 5002:5000
+
+    environment:
+      - FLASK_APP=./deLijnRatings/ratings/client.py
+      - FLASK_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@ratings-db:5432/ratings
+
+    depends_on:
+      - ratings-db
+
+  ratings-db:
+    build:
+      context: ./deLijnRatings/ratings/ratings-db
+      dockerfile: Dockerfile
+
+    ports:
+      - 5436:5432
+
+    environment:
+      - POSTGRES_USERS=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  delijnapi:
+    build:
+      context: ./deLijnRatings/delijnapi
+      dockerfile: Dockerfile
+
+    volumes:
+      - './deLijnRatings/delijnapi:/usr/src/app'
+
+    ports:
+      - 5003:5000
+
+    environment:
+      - FLASK_APP=./deLijnRatings/delijnapi/client.py
+      - FLASK_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@delijn-db:5432/delijn
+
+    depends_on:
+      - delijn-db
+
+  delijn-db:
+    build:
+      context: ./deLijnRatings/delijnapi/delijn-db
+      dockerfile: Dockerfile
+
+    ports:
+      - 5437:5432
+
+    environment:
+      - POSTGRES_USERS=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  
