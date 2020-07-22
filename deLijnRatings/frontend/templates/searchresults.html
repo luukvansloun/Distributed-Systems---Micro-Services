@@ -1,0 +1,41 @@
+{% extends 'layout.html'%}  
+
+{% block body %}
+{% if searchType != "user" %}
+<h4 class="text-left"><strong>Ratings found for {{ searchType }}: {{ searchValue }} with average rating: {{ average }}/5</strong></h4>
+{% else %}
+<h4 class="text-left"><strong>Ratings found for {{ searchType }}: {{ searchValue }}</strong></h4>
+{% endif %}
+  <div class="text-left">
+      <div class="col-md-12">
+          <div class="panel-body">
+            {% if searchType == "user" %}
+              {% if stopList %}
+                {% for stop in stopList %}
+                  <h4>- Stop {{ stop.id }}: {{ stop.rating }}/5</h4>
+                {% endfor %}
+              {% endif %}
+              {% if vehicleList %}
+                {% for vehicle in vehicleList %}
+                  <h4>- {{ vehicle.type }} {{ vehicle.id }}: {{ vehicle.rating }}/5</h4>
+                {% endfor %}
+              {% endif %}
+            {% else %}
+              {% if stopList %}
+                {% for stop in stopList %}
+                  <h4>- {{ stop.user }}: {{ stop.rating }}/5</h4>
+                {% endfor %}
+              {% endif %}
+              {% if vehicleList %}
+                {% for vehicle in vehicleList %}
+                  <h4>- {{ vehicle.user }}: {{ vehicle.rating }}/5</h4>
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

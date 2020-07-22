@@ -1,0 +1,131 @@
+{% extends 'layout.html'%}  
+
+{% block body %}
+<h4 class="text-left"><strong>Stops</strong></h4>
+  <div class="jumbotron text-center">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-login">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-4">
+                <a style="color: black;" href="{{ url_for('rateStopLine') }}" class="active" id="login-form-link">Select Stop by Line</a>
+              </div>
+              <div class="col-xs-4">
+                <a href="{{ url_for('rateStopTown') }}" id="register-form-link">Select Stop by Town</a>
+              </div>
+              <div class="col-xs-4">
+                <a href="{{ url_for('rateStopAll') }}" id="register-form-link">Select From All Stops</a>
+              </div>
+            </div>
+              <hr>
+            </div>
+            <div class="panel-body">
+              <form id="stopform" method="post" action="{{ url_for('rateStopLine') }}">
+                {{ stop_rating_form.csrf_token }}
+                {% from "_formhelpers.html" import render_field %}
+                <div class="form-group">
+                  {{render_field(stop_rating_form.provinceField, class_="form-control")}}
+                </div>
+                <div id="line_div" class="form-group">
+                  {{render_field(stop_rating_form.lineField, class_="form-control")}}
+                </div>
+                <div id="dir_div" class="form-group">
+                  {{render_field(stop_rating_form.directionField, class_="form-control")}}
+                </div>
+                <div id="stop_div">
+                  <div class="form-group">
+                    {{render_field(stop_rating_form.stop, class_="form-control")}}
+                  </div>
+                  <div class="form-group">
+                    {{render_field(stop_rating_form.rating, class_="form-control")}}
+                  </div>
+                  <div class="form-group">
+                    {{render_field(stop_rating_form.username, class_="form-control")}}
+                  </div>
+                  <div class="form-group">
+                    {{render_field(stop_rating_form.password, class_="form-control")}}
+                  </div>
+                </div>
+                <p><input type="submit" class="btn btn-primary" style="background-color: grey; border:none;" value="Rate"></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let line_div = document.getElementById('line_div');
+    let dir_div = document.getElementById('dir_div');
+    let stop_div = document.getElementById('stop_div')
+
+    let province_select = document.getElementById('province')
+    let line_select = document.getElementById('line')
+    let direction_select = document.getElementById('direction')
+    let stop_select = document.getElementById('stopfield')
+    let loading = document.getElementById('loading');
+
+    window.onload = function() {
+      province_select.innerHTML = '<option disabled selected>Select Province</option>' + province_select.innerHTML;
+      line_div.style.display = "none";
+      dir_div.style.display = "none";
+      stop_div.style.display = "none";
+    }
+
+    province_select.onchange = function () {
+      province = province_select.value;
+      fetch("http://localhost:5003/provinces/" + province + "/lines").then(function(response) {
+        response.json().then(function(data) {
+          let options = '<option disabled selected>Select Line</option>';
+          for(let line of data.lines) {
+            options += '<option value="' + line.privlinenumber + '">' + line.linenumber + ": " + line.description + '</option>';
+          }
+
+          line_select.innerHTML = options;
+        });
+      }); 
+      line_div.style.display = "block";
+      dir_div.style.display = "none";
+      stop_div.style.display = "none";
+    }
+
+    line_select.onchange = function () {
+      province = province_select.value;
+      line = line_select.value;
+
+      fetch("http://localhost:5003/" + province + "/lines/" + line + "/directions").then(function(response) {
+        response.json().then(function(data) {
+          let options = '<option disabled selected>Select Direction</option>';
+          for(let dir of data.directions) {
+            options += '<option value="' + dir.direction + '">' + dir.direction + ": " + dir.destination + 
+                  '</option>';
+          }
+          direction_select.innerHTML = options;
+        });
+      }); 
+      dir_div.style.display = "block";
+      stop_div.style.display = "none";
+    }
+
+    direction_select.onchange = function () {
+      province = province_select.value;
+      line = line_select.value;
+      direction = direction_select.value;
+
+      fetch("http://localhost:5003/" + province + "/lines/" + line + "/directions/" + direction).then(function(response) {
+        response.json().then(function(data) {
+          let options = '<option disabled selected>Select Stop</option>';
+          for(let stop of data.stops) {
+            options += '<option value="' + stop.stopNumber + '">' + stop.stopNumber + ": " + stop.description + 
+                  '</option>';
+          }
+          stop_select.innerHTML = options;
+        });
+        stop_div.style.display = "block";
+      });
+    }
+  </script>
+
+{% endblock %}

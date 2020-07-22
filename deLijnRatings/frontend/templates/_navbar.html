@@ -1,0 +1,31 @@
+<nav class="navbar-inverse navbar-fixed-top col-sm-12" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <style>
+                .image {
+                    background-image: url("https://png.icons8.com/wired/50/9d9d9d/monitor.png");
+                }
+
+                .image:hover{
+                    background-image: url("https://png.icons8.com/wired/50/ffffff/monitor.png")
+                }
+            </style>
+            <a class="navbar-left" href="/">
+                
+            <a class="navbar-brand" href="/">De Lijn Ratings</a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <ul class="nav navbar-nav navbar-collapse collapse out">
+            <li><a></a></li>
+            <li><a href="{{ url_for('registerUser') }}">Register</a></li>
+            <li><a href="{{ url_for('ratings') }}">Ratings</a></li>
+            <li><a href="{{ url_for('rateVehicle') }}">Vehicles</a></li>
+            <li><a href="{{ url_for('rateStopLine') }}">Stops</a></li>
+        </ul>
+    </div>
+</nav>
