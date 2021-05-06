@@ -1,7 +1,7 @@
 Flask==1.1.1
 Flask-Restful==0.3.7
 Flask-SQLAlchemy==2.4.1
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 psycopg2==2.8.4
 passlib==1.7.2
 Flask-CLI==0.4.0
